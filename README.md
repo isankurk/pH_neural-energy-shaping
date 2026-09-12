@@ -64,18 +64,18 @@ $$\mathbf{f}_\theta(\mathbf{z}, \mathbf{u}) = \begin{bmatrix} \mathbf{0} & \math
 with $H_\theta(\mathbf{z}) = \frac{1}{2} \mathbf{p}^\top \mathbf{M}_{\theta_1}^{-1}(\mathbf{q}) \mathbf{p} + V_{\theta_2}(\mathbf{q})$.
 
 ### 2. Neural Optimal Energy Shaping (OES) Control
-The parameterization of the EB-PBC policy incorporates an added potential $V_\phi^*(\mathbf{q})$ and a state- and time-dependent damping injection matrix $\mathbf{K}_\phi^*(t, \mathbf{z})$:
+The parameterization of the EB-PBC policy incorporates an added potential $V_\phi^\*(\mathbf{q})$ and a state- and time-dependent damping injection matrix $\mathbf{K}_\phi^*(t, \mathbf{z})$:
 
-$$\mathbf{u}_\phi(t, \mathbf{z}) = -\mathbf{G}_\theta^\dagger(\mathbf{q}) \mathbf{F}_\theta^\top(\mathbf{q}) \begin{bmatrix} \nabla_{\mathbf{q}} V_\phi^*(\mathbf{q}) \\ \mathbf{0} \end{bmatrix} - \mathbf{K}_\phi^*(t, \mathbf{z}) \mathbf{g}_\theta^\top(\mathbf{q}) \nabla_{\mathbf{p}} H_\theta(\mathbf{z})$$
+$$\mathbf{u}_\phi(t, \mathbf{z}) = -\mathbf{G}_\theta^\dagger(\mathbf{q}) \mathbf{F}_\theta^\top(\mathbf{q}) \begin{bmatrix} \nabla_{\mathbf{q}} V_\phi^\*(\mathbf{q}) \\ \mathbf{0} \end{bmatrix} - \mathbf{K}_\phi^*(t, \mathbf{z}) \mathbf{g}_\theta^\top(\mathbf{q}) \nabla_{\mathbf{p}} H_\theta(\mathbf{z})$$
 
-For fully-actuated systems ($\operatorname{rank}(\mathbf{g}(\mathbf{q})) = n$), the matching partial differential equations are satisfied automatically without requiring cancellation of the natural potential $V(\mathbf{q})$.
+For fully-actuated systems ($\text{rank}(\mathbf{g}(\mathbf{q})) = n$), the matching partial differential equations are satisfied automatically without requiring cancellation of the natural potential $V(\mathbf{q})$.
 
 ### 3. Dissipation Regularization
 To impart robustness against model mismatch (e.g., sim-to-real gap), the policy objective is augmented with a dissipation penalty:
 
 $$\mathcal{L}_u = \ell_u(\mathbf{z}_0) + \mathcal{L}_{\mathrm{diss}}$$
 
-$$\mathcal{L}_{\mathrm{diss}} = \lambda_{\mathrm{diss}} \mathbb{E}_{\mathbf{z}} \left[ \operatorname{ReLU}\left( \dot{H}_{\theta,\phi_d}(\mathbf{z}) + \rho \|\mathbf{z} - \mathbf{z}_d\|^2 \right) \right]$$
+$$\mathcal{L}_{\mathrm{diss}} = \lambda_{\mathrm{diss}} \mathbb{E}_{\mathbf{z}} \left[ \text{ReLU}\left( \dot{H}_{\theta,\phi_d}(\mathbf{z}) + \rho \|\mathbf{z} - \mathbf{z}_d\|^2 \right) \right]$$
 
 where $\dot{H}_{\theta,\phi_d}(\mathbf{z}) = \nabla H_{\theta,\phi_d}^\top \mathbf{f}_\theta(\mathbf{z}, \mathbf{u}_\phi(\mathbf{z}))$, $\rho > 0$ is the prescribed dissipation rate, and $\lambda_{\mathrm{diss}}$ is the regularization weight.
 
@@ -83,14 +83,14 @@ where $\dot{H}_{\theta,\phi_d}(\mathbf{z}) = \nabla H_{\theta,\phi_d}^\top \math
 
 ## Theoretical Guarantees
 
-- **Nominal Stability (Lemmas 1 & 2)**: Under the parameterized EB-PBC law with $V_\phi^* \in \mathcal{C}^2$ and $\mathbf{K}_\phi^*(t, \mathbf{z}) \succeq \kappa \mathbf{I}$ ($\kappa > 0$), the target equilibrium $\mathbf{z}_d = (\mathbf{q}_d, \mathbf{0})$ is an isolated strict local minimum of $H_{\phi_d}$ and is uniformly locally asymptotically stable (established via Barbalat's Lemma and Matrosov's Theorem).
+- **Nominal Stability (Lemmas 1 & 2)**: Under the parameterized EB-PBC law with $V_\phi^* \in \mathcal{C}^2$ and $\mathbf{K}_\phi^*(t, \mathbf{z}) \succeq \kappa \mathbf{I}$ ($\kappa > 0$), the target equilibrium $\mathbf{z}_d$ = ($\mathbf{q}_d, \mathbf{0}$) is an isolated strict local minimum of $H_{\phi_d}$ and is uniformly locally asymptotically stable (established via Barbalat's Lemma and Matrosov's Theorem).
 - **Practical Stability under Model Mismatch (Theorem 1)**: Let model approximation errors over a compact domain $\mathcal{D}$ satisfy $\|\mathbf{f}_\theta - \mathbf{f}\| \le \epsilon$, $\|\mathbf{G}_\theta - \mathbf{G}\| \le \epsilon_G$, and $\|\mathbf{R}_\theta - \mathbf{R}\| \le \epsilon_R$. Along trajectories of the true closed-loop system:
 
 $$\dot{H}_d(t, \mathbf{z}) \le -\rho \|\mathbf{z} - \mathbf{z}_d\|^2 + \xi + \varepsilon_{\mathrm{diss}}$$
 
 where $\xi = \mathcal{O}(\epsilon, \epsilon_R, \epsilon_G)$. System trajectories are uniformly practically asymptotically stable (uniformly ultimately bounded) and enter the compact sublevel set containing:
 
-$$\left\{ \mathbf{z} \in \Omega_h : \|\mathbf{z} - \mathbf{z}_d\| \le \sqrt{\frac{\xi + \varepsilon_{\mathrm{diss}}}{\rho}} \right\}$$
+$$\{ \mathbf{z} \in \Omega_h : \|\mathbf{z} - \mathbf{z}_d\| \le \sqrt{\frac{\xi + \varepsilon_{\mathrm{diss}}}{\rho}} \}$$
 
 ---
 
@@ -153,10 +153,10 @@ Performance comparison for swing-up of the 2-link torsional pendulum across exac
 All networks are fully connected with the format $d_{\mathrm{in}} - n_1 f_{\mathrm{act}_1} - \dots - n_N f_{\mathrm{act}_N} - d_{\mathrm{out}}$:
 
 - $\mathbf{M}_{\theta_1}^{-1} = \mathbf{L}_{\theta_1}^\top \mathbf{L}_{\theta_1}$: $2n - 300\,\tanh - 300\,\tanh - 300\,\tanh - n$ (with $+\epsilon \mathbf{I}$, $\epsilon > 0$ for positive definiteness)
-- $V_{\theta_2}$: $n - 50\,\tanh - 50\,\tanh - n$
+- $V_{\theta_2}$: $n - 50\,\tanh - 50\,\tanh - 1$
 - $\mathbf{g}_{\theta_3}$: $2n - 400\,\tanh - 400\,\tanh - n$
-- $V_\phi^*$: $n - 64\,\operatorname{softplus} - 64\,\operatorname{softplus} - 64\,\tanh - n$
-- $\mathbf{K}_\phi^*$: $(2n+1) - 64\,\operatorname{softplus} - 64\,\operatorname{softplus} - n\,\operatorname{softplus}$ (with $+\kappa \mathbf{I}$, $\kappa > 0$ for positive definiteness)
+- $V_\phi^*$: $n - 64\,\text{softplus} - 64\,\text{softplus} - 64\,\tanh - n$
+- $\mathbf{K}_\phi^*$: $(2n+1) - 64\,\text{softplus} - 64\,\text{softplus} - n\,\text{softplus}$ (with $+\kappa \mathbf{I}$, $\kappa > 0$ for positive definiteness)
 
 ### Training Hyperparameters
 - **ODE Solver**: Fourth-order Runge-Kutta (`rk4`)
